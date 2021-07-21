@@ -41,6 +41,56 @@ function renderCard() {
 }
 ```
 
+# Development within a dependent project
+
+It may be handy to develop office-contact-card within the context of a dependent project or library. 
+
+## Prerequisites 
+
+- [Python 2.7](https://www.python.org/download/releases/2.7/)
+- msbuild.exe, specifically the 2017 version. Either obtainable through downloading and installing [Visual Studio 2017](https://visualstudio.microsoft.com/vs/older-downloads/) with the "Desktop development with C++" workload or running `npm i -g windows-build-tools`
+
+## How-to
+
+First clone or download office-contact-card to a folder
+
+`git clone https://github.com/microsoft/contact-card.git`
+
+Install and build this component
+
+`cd contact-card && npm install && npm run build`
+
+Next create a symlink into the global node_modules folder using [npm link](https://docs.npmjs.com/cli/v6/commands/npm-link). To ensure the app [has no duplicate React](https://reactjs.org/warnings/invalid-hook-call-warning.html#duplicate-react) perform the link against your projects specific version of React. This command may require a force, which can be accomplished by appending a `-f`
+
+`npm link ..\..\my-project-using-contact-card\src\node_modules\react\` 
+
+Navigate back to the dependent project
+
+`cd C:\workspace\my-project-using-contact-card`
+
+And use the linked office-contact-card
+
+`npm link office-contact-card`
+
+Restart your application and your project will now be using your locally installed office-contact-card repository. 
+
+You can run `npm list -g --depth=0 --link=true` to verify the symlink is working properly. That command should output something like the following: 
+
+```
+C:\Program Files\nodejs -> .\
++-- office-contact-card@2.1.0 -> .\..\..\path\to\your\local\contact-card
+```
+
+## Reloading changes to contact-card
+
+After every change done to the local office-contact-card a subsequent `npm run build` needs to be done within the contact-card folder.
+
+## Clean-up
+
+Once you've completed changing office-contact-card and want to revert the symlink run the following from your dependent project directory
+
+`npm unlink --no-save dependency`
+
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
